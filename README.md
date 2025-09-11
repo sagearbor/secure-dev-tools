@@ -1,31 +1,27 @@
-# Secure Development Environment Tools
-
+Secure Development Environment Tools
 This repository provides centrally managed, security-audited configurations for running powerful development tools in sandboxed environments.
 
-Each tool is self-contained in its own directory.
+Each tool is self-contained in its own directory. To set up a tool in your project, follow the installation instructions for that specific tool below.
 
-## Available Tools
+Available Tools
+1. Claude CLI (Offline / Max Security)
+This is a secure, network-disabled, containerized environment for running the claude-cli Python tool. Use this for maximum security on sensitive codebases. The tool can only read and write files within the project directory it is run from.
 
-### 1. Claude CLI
+To Install in Your Project:
 
-A secure, network-disabled, containerized environment for running the `claude-cli` Python tool. The tool can only read and write files within the project directory it is run from.
+Navigate to your project's root directory and run the following command:
 
-**To Install in Your Project:**
+bash <(curl -sSL "[https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-cli/install.sh](https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-cli/install.sh)")
 
-Navigate to your project's root directory and run the following two commands:
+This will download and run the installer in one step, creating a ./claude command for you to use.
 
-**A. Download the installer:**
+2. Claude CLI (Online Version)
+Warning: This version can access the internet. Use it for tasks that require network access, like installing dependencies or researching APIs. Do not use it on highly sensitive codebases.
 
-```
-curl -sSL "[https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-cli/install.sh](https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-cli/install.sh)" -o setup_claude.sh
-```
+To Install in Your Project:
 
-**B. Run the installer:**
+Navigate to your project's root directory and run the following command:
 
-```
-bash setup_claude.sh
-```
+bash <(curl -sSL "[https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-online/install.sh](https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-online/install.sh)")
 
-This will create a `./claude` command in your project for you to use. You can safely delete the `setup_claude.sh` script after it has run.
-
-*(When you add more tools in the future, you will add a new section for them here.)*
+This will create a ./claude-online command for you to use.

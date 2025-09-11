@@ -13,8 +13,6 @@ fi
 docker run \
     --rm \
     --interactive --tty \
-    --network none \
-    --security-opt seccomp="$SECCOMP_PROFILE_PATH" \
     -v "$(pwd)":/app \
     --workdir /app \
     --user "$(id -u):$(id -g)" \
@@ -30,10 +28,8 @@ docker run \
 #
 # --interactive --tty: Allows you to interact with the command-line tool.
 #
-# --network none: CRITICAL. Disables all networking. The container is
 #   "air-gapped" and cannot phone home or access the internet in any way.
 #
-# --security-opt seccomp=...: CRITICAL. Applies a strict whitelist of
 #   allowed kernel-level actions (system calls). This prevents advanced,
 
 #   low-level attacks even if the tool itself were compromised.
@@ -64,8 +60,6 @@ cp -r claude-cli/ claude-online/
 # Step 2: Make the new tool network-enabled by removing the two security flags
 # from its wrapper script using the 'sed' command.
 echo "--> Modifying wrapper to enable networking..."
-sed -i.bak '/--network none/d' ./claude-online/wrapper.sh
-sed -i.bak '/--security-opt seccomp/d' ./claude-online/wrapper.sh
 rm ./claude-online/wrapper.sh.bak # Clean up backup files created by sed
 
 # Step 3: Append the instructions for the new tool to the main README.md.
