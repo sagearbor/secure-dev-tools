@@ -10,9 +10,14 @@ LABEL description="A secure, isolated environment for running the Claude AI CLI.
 RUN groupadd --gid 1001 appuser && \
     useradd --uid 1001 --gid 1001 -m appuser
 
-# Install the Claude CLI tool using pip.
-# --no-cache-dir reduces the image size.
-RUN pip install --no-cache-dir claude-cli
+# Install claude-code CLI
+# Using the official installation script
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://claude.ai/install.sh | bash && \
+    apt-get remove -y curl && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set the working directory for the container.
 # This is where the project files will be mounted.

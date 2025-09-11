@@ -10,18 +10,23 @@ LABEL description="A secure, isolated environment for running the Claude AI CLI.
 RUN groupadd --gid 1001 appuser && \
     useradd --uid 1001 --gid 1001 -m appuser
 
-# Install the Claude CLI tool using pip.
-# --no-cache-dir reduces the image size.
-RUN pip install --no-cache-dir claude-cli
+# Install required packages including iptables for network filtering
+RUN apt-get update && \
+    apt-get install -y curl iptables && \
+    curl -fsSL https://claude.ai/install.sh | bash && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the entrypoint script from the tools directory
+COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set the working directory for the container.
 # This is where the project files will be mounted.
 WORKDIR /app
 
-# Switch to the non-root user.
-# Any subsequent commands will be run as 'appuser'.
-USER appuser
+# Note: We cannot use USER here because iptables requires root
+# The wrapper script will handle dropping privileges after setting up firewall
 
-# The entrypoint is the command that will be run when the container starts.
-# It's set to 'claude' and will receive arguments from the docker run command.
-ENTRYPOINT ["claude"]
+# Set the entrypoint to our script which sets up network restrictions
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh", "claude"]

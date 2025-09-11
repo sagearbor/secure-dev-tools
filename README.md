@@ -4,8 +4,8 @@ This repository provides centrally managed, security-audited configurations for 
 Each tool is self-contained in its own directory. To set up a tool in your project, follow the installation instructions for that specific tool below.
 
 Available Tools
-1. Claude CLI (Offline / Max Security)
-This is a secure, network-disabled, containerized environment for running the claude-cli Python tool. Use this for maximum security on sensitive codebases. The tool can only read and write files within the project directory it is run from.
+1. Claude CLI (API-Only Network Access)
+This is a secure, network-restricted, containerized environment for running Claude Code. Network access is restricted to ONLY Anthropic's API endpoints (api.anthropic.com and claude.ai) - no other internet access is allowed. The tool can only read and write files within the project directory it is run from.
 
 To Install in Your Project:
 
@@ -15,8 +15,8 @@ bash <(curl -sSL "[https://raw.githubusercontent.com/sagearbor/secure-dev-tools/
 
 This will download and run the installer in one step, creating a ./claude command for you to use.
 
-2. Claude CLI (Online Version)
-Warning: This version can access the internet. Use it for tasks that require network access, like installing dependencies or researching APIs. Do not use it on highly sensitive codebases.
+2. Claude CLI (Full Network Access)
+Warning: This version has unrestricted internet access. Use it for tasks that require network access beyond the Anthropic API, like installing dependencies, fetching documentation, or researching APIs. Only use this version when the restricted version is insufficient.
 
 To Install in Your Project:
 

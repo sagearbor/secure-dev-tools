@@ -13,13 +13,13 @@ fi
 docker run \
     --rm \
     --interactive --tty \
-    --network none \
+    --cap-add NET_ADMIN \
+    --env APPLY_NETWORK_RESTRICTIONS=true \
     --security-opt seccomp="$SECCOMP_PROFILE_PATH" \
     -v "$(pwd)":/app \
     --workdir /app \
-    --user "$(id -u):$(id -g)" \
     "$IMAGE_NAME" \
-    claude "$@"
+    "$@"
 
 # --------------------------- SECURITY EXPLANATION ---------------------------
 # The `docker run` command above constructs a temporary, locked-down "prison"
@@ -30,21 +30,20 @@ docker run \
 #
 # --interactive --tty: Allows you to interact with the command-line tool.
 #
-# --network none: CRITICAL. Disables all networking. The container is
-#   "air-gapped" and cannot phone home or access the internet in any way.
+# --cap-add NET_ADMIN: Allows iptables to configure network filtering rules.
+#   The entrypoint script uses this to restrict network access to ONLY
+#   Anthropic's API endpoints (api.anthropic.com and claude.ai).
+#
+# --env APPLY_NETWORK_RESTRICTIONS=true: Triggers the network filtering.
+#   Only HTTPS connections to Anthropic's servers are allowed.
 #
 # --security-opt seccomp=...: CRITICAL. Applies a strict whitelist of
 #   allowed kernel-level actions (system calls). This prevents advanced,
-
 #   low-level attacks even if the tool itself were compromised.
 #
 # -v "$(pwd)":/app: Controlled File Access. Maps ONLY the current project
 #   directory into the container. The tool CANNOT see or access any other
 #   files or folders on your system (e.g., ~/.ssh, /etc).
-#
-# --user ...: Principle of Least Privilege. Runs the process as a non-root
-#   user inside the container. This prevents it from modifying its own
-#   environment and ensures files it creates have the correct ownership.
 # ----------------------------------------------------------------------------
 ```
 
