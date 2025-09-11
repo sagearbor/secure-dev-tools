@@ -19,6 +19,14 @@ secure-dev-tools/
 │   ├── seccomp.json     # Security profile for system call filtering
 │   └── install.sh       # Downloads components and builds container locally
 │
+├── claude-withMCPs/     # MCPs/Trusted APIs network access version
+│   ├── Dockerfile       # Container with Claude Code and configurable filtering
+│   ├── entrypoint.sh    # Script that reads allowed-domains.txt for filtering
+│   ├── wrapper.sh       # Wrapper that manages allowed domains configuration
+│   ├── allowed-domains.txt # User-editable list of allowed domains
+│   ├── seccomp.json     # Security profile for system call filtering
+│   └── install.sh       # Downloads components and domain config
+│
 └── claude-online/       # Full network access version
     ├── Dockerfile       # Same container definition without network restrictions
     ├── wrapper.sh       # Modified wrapper without network filtering
@@ -29,10 +37,13 @@ secure-dev-tools/
 ## Architecture & Design Patterns
 
 ### Security Architecture
-- **Containerization**: Both tools run inside Docker containers for isolation
+- **Containerization**: All tools run inside Docker containers for isolation
 - **File System Isolation**: Only current working directory is mounted into container
-- **Network Filtering**: The restricted version (`claude-cli`) uses iptables to allow ONLY connections to Anthropic's API endpoints
-- **System Call Filtering**: The restricted version uses seccomp profiles to restrict kernel access
+- **Network Filtering**: 
+  - `claude-cli`: Restricted to Anthropic API endpoints only
+  - `claude-withMCPs`: Configurable allowlist via `allowed-domains.txt`
+  - `claude-online`: Full network access
+- **System Call Filtering**: Restricted versions use seccomp profiles to restrict kernel access
 - **Ephemeral Containers**: Containers are destroyed after each use, preventing persistence
 
 ### Installation Pattern
@@ -93,8 +104,9 @@ The full access version (`claude-online`) removes network filtering and seccomp 
 ### Repository URLs
 The installers fetch components from:
 - Base URL: `https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/`
-- Offline tool: `${BASE_URL}/claude-cli/`
-- Online tool: `${BASE_URL}/claude-online/`
+- API-only tool: `${BASE_URL}/claude-cli/`
+- MCPs/Trusted tool: `${BASE_URL}/claude-withMCPs/`
+- Full access tool: `${BASE_URL}/claude-online/`
 
 ### File Permissions
 - Wrapper scripts are made executable (`chmod +x`) during installation

@@ -15,7 +15,18 @@ bash <(curl -sSL "[https://raw.githubusercontent.com/sagearbor/secure-dev-tools/
 
 This will download and run the installer in one step, creating a ./claude command for you to use.
 
-2. Claude CLI (Full Network Access)
+2. Claude CLI with MCPs (Trusted APIs)
+This version allows network access to Anthropic's API plus configurable trusted endpoints like MCP servers (e.g., Context7). Edit the allowed-domains.txt file after installation to add your trusted API endpoints.
+
+To Install in Your Project:
+
+Navigate to your project's root directory and run the following command:
+
+bash <(curl -sSL "https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-withMCPs/install.sh")
+
+This will create a ./claude-withMCPs command and a ./tools/allowed-domains.txt file you can customize.
+
+3. Claude CLI (Full Network Access)
 Warning: This version has unrestricted internet access. Use it for tasks that require network access beyond the Anthropic API, like installing dependencies, fetching documentation, or researching APIs. Only use this version when the restricted version is insufficient.
 
 To Install in Your Project:

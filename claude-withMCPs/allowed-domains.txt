@@ -1,0 +1,14 @@
+# Allowed domains for Claude MCP/Trusted API network access
+# Add one domain per line (without https://)
+# Lines starting with # are comments
+
+# Anthropic API endpoints (always required)
+api.anthropic.com
+claude.ai
+
+# MCP Context7 endpoint
+context7.com
+
+# Add other trusted MCP servers or API endpoints below:
+# example-mcp-server.com
+# api.yourdomain.com
