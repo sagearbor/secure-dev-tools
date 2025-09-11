@@ -1,0 +1,15 @@
+.gitignore for the secure-dev-tools repository
+Ignore operating system files
+.DS_Store
+Thumbs.db
+
+Ignore common editor and IDE-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+Ignore common backup file patterns
+*~
+*.bak
+*.old
