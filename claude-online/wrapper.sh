@@ -5,22 +5,23 @@ set -e
 IMAGE_NAME="claude-secure-env"
 SECCOMP_PROFILE_PATH="./tools/seccomp.json"
 
-# Note: seccomp provides system call filtering for defense-in-depth security.
-# It doesn't control network access - that's unrestricted in this version.
-if [ ! -f "$SECCOMP_PROFILE_PATH" ]; then
-    echo "❌ Security profile not found at $SECCOMP_PROFILE_PATH. Please run the installer again."
-    exit 1
-fi
+# SECCOMP TEMPORARILY DISABLED - Azure VM Compatibility Issue
+# See claude-cli/wrapper.sh for detailed explanation
+# TO RE-ENABLE: Uncomment the check below and the --security-opt line in docker run
+
+# if [ ! -f "$SECCOMP_PROFILE_PATH" ]; then
+#     echo "❌ Security profile not found at $SECCOMP_PROFILE_PATH. Please run the installer again."
+#     exit 1
+# fi
 
 docker run \
     --rm \
     --interactive --tty \
-    --security-opt seccomp="$SECCOMP_PROFILE_PATH" \
-    -v "$(pwd)":/app \
+    -v "$(pwd)":/app:rw \
     --workdir /app \
-    --user "$(id -u):$(id -g)" \
     "$IMAGE_NAME" \
-    claude "$@"
+    "$@"
+    # --security-opt seccomp="$SECCOMP_PROFILE_PATH" \  # DISABLED - Azure VM issue
 
 # --------------------------- SECURITY EXPLANATION ---------------------------
 # The `docker run` command above constructs a temporary, locked-down "prison"
@@ -31,17 +32,14 @@ docker run \
 #
 # --interactive --tty: Allows you to interact with the command-line tool.
 #
-# --security-opt seccomp=...: Defense-in-depth. Applies a strict whitelist of
-#   allowed kernel-level actions (system calls). This prevents advanced,
-#   low-level attacks even if the tool itself were compromised. Note: This
-#   controls system calls, not network access (which is unrestricted here).
-#
-# -v "$(pwd)":/app: Controlled File Access. Maps ONLY the current project
+# -v "$(pwd)":/app:rw: Controlled File Access. Maps ONLY the current project
 #   directory into the container. The tool CANNOT see or access any other
 #   files or folders on your system (e.g., ~/.ssh, /etc).
 #
-# --user ...: Principle of Least Privilege. Runs the process as a non-root
-#   user inside the container. This prevents it from modifying its own
-#   environment and ensures files it creates have the correct ownership.
+# USER appuser: The Dockerfile sets the container to run as a non-root user
+#   (appuser with UID 1001) for security. This user has minimal permissions.
+#
+# Note: This version has UNRESTRICTED network access for tasks requiring
+#   internet connectivity (package installation, API research, etc.)
 # ----------------------------------------------------------------------------
 

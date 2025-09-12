@@ -47,7 +47,8 @@ docker run \
     --interactive --tty \
     --cap-add NET_ADMIN \
     --env APPLY_NETWORK_RESTRICTIONS=true \
-    -v "$(pwd)":/app \
+    -v "$(pwd)":/app:rw \
+    -v "$ALLOWED_DOMAINS_PATH":/etc/allowed-domains.txt:ro \
     --workdir /app \
     "$IMAGE_NAME" \
     "$@"

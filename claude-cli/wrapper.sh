@@ -37,7 +37,7 @@ docker run \
     --interactive --tty \
     --cap-add NET_ADMIN \
     --env APPLY_NETWORK_RESTRICTIONS=true \
-    -v "$(pwd)":/app \
+    -v "$(pwd)":/app:rw \
     --workdir /app \
     "$IMAGE_NAME" \
     "$@"

@@ -81,7 +81,14 @@ setup_firewall() {
 # Check if we should apply network restrictions
 if [ "$APPLY_NETWORK_RESTRICTIONS" = "true" ]; then
     setup_firewall
+    
+    # Drop privileges after setting up firewall
+    # Always run as the non-root appuser (UID 1001) for security
+    # This user has minimal permissions - only what's needed to run Claude
+    
+    # Execute command as the minimal-permission appuser
+    exec su -s /bin/bash appuser -c "$(printf '%q ' "$@")"
+else
+    # No network restrictions, just execute normally
+    exec "$@"
 fi
-
-# Execute the main command
-exec "$@"
