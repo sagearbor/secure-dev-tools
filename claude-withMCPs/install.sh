@@ -29,6 +29,8 @@ echo "✅ Created directory: $TOOLS_DIR"
 echo "Downloading security profiles and scripts..."
 curl -fsSL "${GIT_REPO_RAW_BASE_URL}/Dockerfile" -o "$TOOLS_DIR/Dockerfile"
 curl -fsSL "${GIT_REPO_RAW_BASE_URL}/entrypoint.sh" -o "$TOOLS_DIR/entrypoint.sh"
+# Note: seccomp.json is downloaded but currently disabled in wrapper.sh due to Azure VM compatibility
+# See wrapper.sh and claude-cli/wrapper.sh for details on the seccomp issue
 curl -fsSL "${GIT_REPO_RAW_BASE_URL}/seccomp.json" -o "$TOOLS_DIR/seccomp.json"
 curl -fsSL "${GIT_REPO_RAW_BASE_URL}/allowed-domains.txt" -o "$TOOLS_DIR/allowed-domains.txt"
 curl -fsSL "${GIT_REPO_RAW_BASE_URL}/wrapper.sh" -o "$WRAPPER_SCRIPT_NAME"

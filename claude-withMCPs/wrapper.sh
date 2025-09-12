@@ -6,11 +6,15 @@ IMAGE_NAME="claude-withMCPs-env"
 SECCOMP_PROFILE_PATH="./tools/seccomp.json"
 ALLOWED_DOMAINS_PATH="./tools/allowed-domains.txt"
 
+# SECCOMP TEMPORARILY DISABLED - Azure VM Compatibility Issue
+# See claude-cli/wrapper.sh for detailed explanation of the Azure VM issue
+# TO RE-ENABLE: Uncomment the check below and the --security-opt line in docker run
+
 # Check for required files
-if [ ! -f "$SECCOMP_PROFILE_PATH" ]; then
-    echo "❌ Security profile not found at $SECCOMP_PROFILE_PATH. Please run the installer again."
-    exit 1
-fi
+# if [ ! -f "$SECCOMP_PROFILE_PATH" ]; then
+#     echo "❌ Security profile not found at $SECCOMP_PROFILE_PATH. Please run the installer again."
+#     exit 1
+# fi
 
 if [ ! -f "$ALLOWED_DOMAINS_PATH" ]; then
     echo "⚠️  No allowed-domains.txt found. Creating default configuration..."
@@ -43,11 +47,11 @@ docker run \
     --interactive --tty \
     --cap-add NET_ADMIN \
     --env APPLY_NETWORK_RESTRICTIONS=true \
-    --security-opt seccomp="$SECCOMP_PROFILE_PATH" \
     -v "$(pwd)":/app \
     --workdir /app \
     "$IMAGE_NAME" \
     "$@"
+    # --security-opt seccomp="$SECCOMP_PROFILE_PATH" \  # DISABLED - Azure VM issue
 
 # --------------------------- SECURITY EXPLANATION ---------------------------
 # This configuration provides a middle ground between the fully restricted

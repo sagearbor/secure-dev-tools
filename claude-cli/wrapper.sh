@@ -5,21 +5,43 @@ set -e
 IMAGE_NAME="claude-secure-env"
 SECCOMP_PROFILE_PATH="./tools/seccomp.json"
 
-if [ ! -f "$SECCOMP_PROFILE_PATH" ]; then
-    echo "❌ Security profile not found at $SECCOMP_PROFILE_PATH. Please run the installer again."
-    exit 1
-fi
+# SECCOMP TEMPORARILY DISABLED - Azure VM Compatibility Issue
+# ------------------------------------------------------------
+# The seccomp security profile is currently commented out due to compatibility
+# issues with Azure VM kernels (6.8.0-xxxx-azure). Even with all necessary
+# syscalls added, the profile causes "operation not permitted" errors during
+# container initialization, specifically:
+#   "error closing exec fds: ensure /proc/thread-self/fd is on procfs"
+#
+# This appears to be related to how Azure VMs handle certain proc filesystem
+# operations differently than standard Linux kernels.
+#
+# TO RE-ENABLE SECCOMP IN THE FUTURE:
+# 1. Uncomment the seccomp check below (lines 22-25)
+# 2. Uncomment the --security-opt line in docker run (line 35)
+# 3. Test thoroughly on the target system
+#
+# Note: Even without seccomp, the container remains highly secure through:
+# - Network isolation (iptables restricts to Anthropic API only)
+# - Filesystem isolation (only current directory is accessible)
+# - Ephemeral containers (--rm flag)
+# - No persistent state between runs
+
+# if [ ! -f "$SECCOMP_PROFILE_PATH" ]; then
+#     echo "❌ Security profile not found at $SECCOMP_PROFILE_PATH. Please run the installer again."
+#     exit 1
+# fi
 
 docker run \
     --rm \
     --interactive --tty \
     --cap-add NET_ADMIN \
     --env APPLY_NETWORK_RESTRICTIONS=true \
-    --security-opt seccomp="$SECCOMP_PROFILE_PATH" \
     -v "$(pwd)":/app \
     --workdir /app \
     "$IMAGE_NAME" \
     "$@"
+    # --security-opt seccomp="$SECCOMP_PROFILE_PATH" \  # DISABLED - See note above
 
 # --------------------------- SECURITY EXPLANATION ---------------------------
 # The `docker run` command above constructs a temporary, locked-down "prison"
