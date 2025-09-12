@@ -10,11 +10,10 @@ LABEL description="A secure, isolated environment for running the Claude AI CLI.
 RUN groupadd --gid 1001 appuser && \
     useradd --uid 1001 --gid 1001 -m appuser
 
-# Install claude-code CLI
-# Using the official installation script
+# Install claude-code CLI using npx
 RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -fsSL https://claude.ai/install.sh | bash && \
+    apt-get install -y curl nodejs npm && \
+    npx -y claude-code@latest --version && \
     apt-get remove -y curl && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
@@ -28,5 +27,5 @@ WORKDIR /app
 USER appuser
 
 # The entrypoint is the command that will be run when the container starts.
-# It's set to 'claude' and will receive arguments from the docker run command.
-ENTRYPOINT ["claude"]
+# It's set to 'npx claude-code@latest' and will receive arguments from the docker run command.
+ENTRYPOINT ["npx", "claude-code@latest"]
