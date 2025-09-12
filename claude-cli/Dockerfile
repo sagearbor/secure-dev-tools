@@ -13,7 +13,7 @@ RUN groupadd --gid 1001 appuser && \
 # Install required packages including iptables for network filtering and Node.js for Claude CLI
 RUN apt-get update && \
     apt-get install -y curl iptables nodejs npm && \
-    npx -y claude-code@latest --version && \
+    npm install -g @anthropic-ai/claude-code && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -29,4 +29,4 @@ WORKDIR /app
 # The wrapper script will handle dropping privileges after setting up firewall
 
 # Set the entrypoint to our script which sets up network restrictions
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh", "npx", "claude-code@latest"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh", "claude"]
