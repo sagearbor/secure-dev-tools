@@ -10,9 +10,11 @@ LABEL description="A secure, isolated environment for running the Claude AI CLI.
 RUN groupadd --gid 1001 appuser && \
     useradd --uid 1001 --gid 1001 -m appuser
 
-# Install claude-code CLI globally using npm
+# Install Node.js 20 LTS and Claude CLI globally
 RUN apt-get update && \
-    apt-get install -y curl nodejs npm && \
+    apt-get install -y curl ca-certificates gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
     npm install -g @anthropic-ai/claude-code && \
     apt-get remove -y curl && \
     apt-get autoremove -y && \
