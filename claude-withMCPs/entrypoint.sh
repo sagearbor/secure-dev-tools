@@ -84,7 +84,11 @@ if [ "$APPLY_NETWORK_RESTRICTIONS" = "true" ]; then
     
     # Drop privileges after setting up firewall
     # Always run as the non-root appuser (UID 1001) for security
-    # This user has minimal permissions - only what's needed to run Claude
+    
+    # Change ownership of /app to appuser inside container
+    # This only affects the container's view - host permissions unchanged
+    echo "Setting up file permissions..."
+    chown -R appuser:appuser /app
     
     # Execute command as the minimal-permission appuser
     exec su -s /bin/bash appuser -c "$(printf '%q ' "$@")"
