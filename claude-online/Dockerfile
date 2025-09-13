@@ -28,6 +28,13 @@ WORKDIR /app
 # Any subsequent commands will be run as 'appuser'.
 USER appuser
 
+# Set permissive umask so files created by container are world-writable
+# This allows both container user (UID 1001) and host user to modify files
+RUN echo "umask 000" >> ~/.bashrc
+
+# Create entrypoint script that sets umask before running claude
+RUN echo '#!/bin/sh\numask 000\nexec claude "$@"' > /home/appuser/entrypoint.sh && \
+    chmod +x /home/appuser/entrypoint.sh
+
 # The entrypoint is the command that will be run when the container starts.
-# It's set to 'claude' and will receive arguments from the docker run command.
-ENTRYPOINT ["claude"]
+ENTRYPOINT ["/home/appuser/entrypoint.sh"]

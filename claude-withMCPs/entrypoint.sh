@@ -84,14 +84,14 @@ if [ "$APPLY_NETWORK_RESTRICTIONS" = "true" ]; then
     
     # Drop privileges after setting up firewall
     # Always run as the non-root appuser (UID 1001) for security
-    
-    # Change ownership of /app to appuser inside container
-    # This only affects the container's view - host permissions unchanged
-    echo "Setting up file permissions..."
-    chown -R appuser:appuser /app
-    
-    # Execute command as the minimal-permission appuser
-    exec su -s /bin/bash appuser -c "$(printf '%q ' "$@")"
+
+    # Set permissive umask so files created by container are world-writable
+    # This allows both container user (UID 1001) and host user to modify files
+    echo "Setting permissive file creation mode..."
+    umask 000
+
+    # Execute command as the minimal-permission appuser with umask 000
+    exec su -s /bin/bash appuser -c "umask 000 && $(printf '%q ' "$@")"
 else
     # No network restrictions, just execute normally
     exec "$@"
