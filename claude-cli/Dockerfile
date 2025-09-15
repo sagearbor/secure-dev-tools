@@ -12,15 +12,15 @@ RUN groupadd --gid 1001 appuser && \
 
 # Install Node.js 20 LTS and required packages for Claude CLI
 RUN apt-get update && \
-    apt-get install -y curl iptables ca-certificates gnupg && \
+    apt-get install -y curl iptables ca-certificates gnupg procps && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g @anthropic-ai/claude-code && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy the entrypoint script from the tools directory
-COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
+# Copy the entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set the working directory for the container.

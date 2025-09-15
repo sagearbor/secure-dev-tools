@@ -34,7 +34,7 @@ echo "✅ Downloaded configuration files."
 
 echo "Building Docker image ('$IMAGE_NAME')..."
 echo "This may take a minute on first install..."
-if ! docker build -t "$IMAGE_NAME" -f "$TOOLS_DIR/Dockerfile" . 2>&1; then
+if ! docker build -t "$IMAGE_NAME" -f "$TOOLS_DIR/Dockerfile" "$TOOLS_DIR" 2>&1; then
     echo ""
     echo "❌ Docker image build failed."
     echo "Common issues:"
