@@ -2,7 +2,7 @@
 # Wrapper script to run the claude tool inside a secure, locked-down Docker container.
 set -e
 
-IMAGE_NAME="claude-secure-env"
+IMAGE_NAME="claude-secure-env-online"
 SECCOMP_PROFILE_PATH="./tools/seccomp.json"
 
 if [ ! -f "$SECCOMP_PROFILE_PATH" ]; then
