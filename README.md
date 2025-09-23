@@ -11,7 +11,7 @@ To Install in Your Project:
 
 Navigate to your project's root directory and run the following command:
 
-bash <(curl -sSL "[https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-cli/install.sh](https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-cli/install.sh)")
+bash <(curl -sSL "https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-cli/install.sh")
 
 This will download and run the installer in one step, creating a ./claude command for you to use.
 
@@ -22,6 +22,15 @@ To Install in Your Project:
 
 Navigate to your project's root directory and run the following command:
 
-bash <(curl -sSL "[https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-online/install.sh](https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-online/install.sh)")
+bash <(curl -sSL "https://raw.githubusercontent.com/sagearbor/secure-dev-tools/main/claude-online/install.sh")
 
 This will create a ./claude-online command for you to use.
+
+Troubleshooting
+If you encounter TLS certificate errors during Docker image builds (e.g., "x509: certificate signed by unknown authority"), this is typically caused by corporate security tools like Zscaler. To resolve:
+
+1. Temporarily disable Zscaler or your corporate VPN/proxy
+2. Run the installation command
+3. Re-enable your security tools after installation completes
+
+The Docker build only needs to run once during initial setup, so this is a one-time requirement.
